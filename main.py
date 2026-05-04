@@ -4,7 +4,7 @@ conn = get_connection()
 print("Conexão ok!")
 conn.close()
 
-from ui.cadastro import TelaCadastro
+from ui.login  import TelaLogin
 
-app = TelaCadastro()
+app = TelaLogin()
 app.mainloop() 

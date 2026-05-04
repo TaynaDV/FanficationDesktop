@@ -31,3 +31,11 @@ def verificar_email(email):
     resultado = cursor.fetchone()
     conn.close()
     return resultado is not None
+
+def fazer_login(email, senha):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_fazer_login ?, ?", (email, senha))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado

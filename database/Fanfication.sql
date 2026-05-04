@@ -294,6 +294,34 @@ BEGIN
 END
 GO 
 
+CREATE PROCEDURE prc_verificar_username
+    @username VARCHAR(30)
+AS
+BEGIN
+    SELECT id_usuario FROM Usuario
+    WHERE username = @username
+END
+GO
+
+CREATE PROCEDURE prc_verificar_email
+    @email VARCHAR(100)
+AS
+BEGIN
+    SELECT id_usuario FROM Usuario
+    WHERE email = @email
+END
+GO
+
+CREATE PROCEDURE prc_fazer_login
+    @email VARCHAR(100),
+    @senha VARCHAR(255)
+AS
+BEGIN
+    SELECT id_usuario, username, email FROM Usuario
+    WHERE email = @email AND senha = @senha
+END
+GO
+
 ------------------------------ TRIGGERS ------------------------------
 
 CREATE TRIGGER trg_deletar_capitulos
@@ -327,3 +355,4 @@ BEGIN
     WHERE id_autor IN (SELECT id_usuario FROM DELETED)
 END
 GO
+SELECT * FROM Usuario

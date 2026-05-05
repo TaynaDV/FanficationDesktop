@@ -23,3 +23,10 @@ def buscar_listas(id_usuario):
     resultado = cursor.fetchall()
     conn.close()
     return resultado
+
+def excluir_lista(id_lista):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_excluir_lista ?", (id_lista,))
+    conn.commit()
+    conn.close()

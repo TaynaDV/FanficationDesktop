@@ -39,3 +39,51 @@ def fazer_login(email, senha):
     resultado = cursor.fetchone()
     conn.close()
     return resultado
+
+def atualizar_perfil(id_usuario, bio, foto_perfil):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_atualizar_perfil ?, ?, ?",
+                   (id_usuario, bio, foto_perfil))
+    conn.commit()
+    conn.close()
+
+def seguir_usuario(id_seguidor, id_seguido):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_seguir_usuario ?, ?",
+                   (id_seguidor, id_seguido))
+    conn.commit()
+    conn.close()
+
+def deixar_seguir(id_seguidor, id_seguido):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_deixar_seguir ?, ?",
+                   (id_seguidor, id_seguido))
+    conn.commit()
+    conn.close()
+
+def buscar_perfil(id_usuario):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_buscar_perfil ?", (id_usuario,))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado
+
+def buscar_seguidores(id_usuario):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_buscar_seguidores ?", (id_usuario,))
+    resultado = cursor.fetchall()
+    conn.close()
+    return resultado
+
+def buscar_seguindo(id_usuario):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_buscar_seguindo ?", (id_usuario,))
+    resultado = cursor.fetchall()
+    conn.close()
+    return resultado

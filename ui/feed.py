@@ -1,12 +1,10 @@
 import customtkinter as ctk
 
-class TelaFeed(ctk.CTk):
-    def __init__(self, usuario=None):
-        super().__init__()
-        self.title("Fanfication")
-        self.geometry("900x650")
-        self.configure(fg_color="#30292F")
-        self.usuario = usuario
+class TelaFeed(ctk.CTkFrame):
+    def __init__(self, app):
+        super().__init__(app, fg_color="#30292F")
+        self.app = app
+        self.usuario = app.usuario
 
         # ── HEADER ──────────────────────────────────────────
         self.frame_header = ctk.CTkFrame(self, fg_color="#413F54", height=60, corner_radius=0)
@@ -34,9 +32,7 @@ class TelaFeed(ctk.CTk):
         self.btn_busca.pack(side="left")
 
         # ── CONTEÚDO PRINCIPAL ──────────────────────────────
-        self.frame_conteudo = ctk.CTkScrollableFrame(
-            self, fg_color="#30292F"
-        )
+        self.frame_conteudo = ctk.CTkScrollableFrame(self, fg_color="#30292F")
         self.frame_conteudo.pack(fill="both", expand=True, padx=20, pady=10)
 
         self.carregar_categorias()
@@ -50,7 +46,7 @@ class TelaFeed(ctk.CTk):
             self.frame_nav, text="📚  Biblioteca", width=180, height=45,
             font=("Arial", 13), fg_color="transparent",
             text_color="white", hover_color="#5F5AA2",
-            command=self.ir_biblioteca
+            command=self.app.mostrar_biblioteca
         )
         self.btn_biblioteca.pack(side="left", expand=True)
 
@@ -58,7 +54,7 @@ class TelaFeed(ctk.CTk):
             self.frame_nav, text="✏️  Criar", width=180, height=45,
             font=("Arial", 13), fg_color="transparent",
             text_color="white", hover_color="#5F5AA2",
-            command=self.ir_criar
+            command=self.app.mostrar_editor
         )
         self.btn_criar.pack(side="left", expand=True)
 
@@ -67,7 +63,7 @@ class TelaFeed(ctk.CTk):
             self.frame_nav, text=f"👤  {username}", width=180, height=45,
             font=("Arial", 13), fg_color="transparent",
             text_color="white", hover_color="#5F5AA2",
-            command=self.ir_perfil
+            command=self.app.mostrar_perfil
         )
         self.btn_perfil.pack(side="left", expand=True)
 
@@ -82,18 +78,15 @@ class TelaFeed(ctk.CTk):
         ]
 
         for categoria in categorias:
-            # Título da categoria
             label_cat = ctk.CTkLabel(
                 self.frame_conteudo, text=categoria,
                 font=("Georgia", 18, "bold"), text_color="#5F5AA2"
             )
             label_cat.pack(anchor="w", pady=(15, 5))
 
-            # Frame horizontal dos cards
             frame_linha = ctk.CTkFrame(self.frame_conteudo, fg_color="transparent")
             frame_linha.pack(fill="x", pady=(0, 5))
 
-            # Cards placeholder
             for i in range(4):
                 card = ctk.CTkFrame(
                     frame_linha, fg_color="#413F54",
@@ -102,7 +95,6 @@ class TelaFeed(ctk.CTk):
                 card.pack(side="left", padx=8)
                 card.pack_propagate(False)
 
-                # Capa placeholder
                 capa = ctk.CTkFrame(
                     card, fg_color="#30292F",
                     width=160, height=140, corner_radius=8
@@ -126,15 +118,3 @@ class TelaFeed(ctk.CTk):
 
     def buscar(self):
         pass
-
-    def ir_biblioteca(self):
-        pass
-
-    def ir_criar(self):
-        pass
-
-    def ir_perfil(self):
-        pass
-
-app = TelaFeed()
-app.mainloop()

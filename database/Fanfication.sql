@@ -8,6 +8,8 @@ username VARCHAR (30) UNIQUE NOT NULL,
 email VARCHAR (100) UNIQUE NOT NULL,
 senha VARCHAR (255) NOT NULL,
 data_nasc DATE NOT NULL,
+foto_perfil VARCHAR(500),
+bio VARCHAR(300),
 data_criacao DATETIME NOT NULL DEFAULT GETDATE()
 );
 
@@ -84,6 +86,14 @@ FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario),
 FOREIGN KEY (id_capitulo) REFERENCES capitulos (id_capitulo)
 );
 
+CREATE TABLE seguidores(
+    id_seguidor INT NOT NULL,
+    id_seguido INT NOT NULL,
+    data_follow DATETIME DEFAULT GETDATE(),
+    CONSTRAINT uq_seguidor_seguido UNIQUE (id_seguidor, id_seguido),
+    FOREIGN KEY (id_seguidor) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_seguido) REFERENCES Usuario(id_usuario)
+);
 ------------------------------ PROCEDURES ------------------------------
 
 CREATE PROCEDURE prc_cadastrar_usuario 
@@ -224,6 +234,90 @@ BEGIN
     WHERE email = @email
 END
 GO
+
+CREATE PROCEDURE prc_atualizar_perfil
+    @id_usuario INT,
+    @bio VARCHAR(300),
+    @foto_perfil VARCHAR(500)
+AS
+BEGIN
+    UPDATE Usuario
+    SET bio = @bio,
+        foto_perfil = @foto_perfil
+    WHERE id_usuario = @id_usuario
+END
+GO
+
+CREATE PROCEDURE prc_seguir_usuario
+    @id_seguidor INT,
+    @id_seguido INT
+AS
+BEGIN
+    INSERT INTO seguidores(id_seguidor, id_seguido)
+    VALUES (@id_seguidor, @id_seguido)
+END
+GO
+
+CREATE PROCEDURE prc_deixar_seguir
+    @id_seguidor INT,
+    @id_seguido INT
+AS
+BEGIN
+    DELETE FROM seguidores
+    WHERE id_seguidor = @id_seguidor
+    AND id_seguido = @id_seguido
+END
+GO
+
+CREATE PROCEDURE prc_buscar_perfil
+    @id_usuario INT
+AS
+BEGIN
+    SELECT id_usuario, username, bio, foto_perfil FROM Usuario
+    WHERE id_usuario = @id_usuario
+END
+GO
+
+CREATE PROCEDURE prc_buscar_seguidores
+    @id_usuario INT
+AS
+BEGIN
+    SELECT u.id_usuario, u.username, u.foto_perfil
+    FROM seguidores s
+    INNER JOIN Usuario u ON s.id_seguidor = u.id_usuario
+    WHERE s.id_seguido = @id_usuario
+END
+GO
+
+CREATE PROCEDURE prc_buscar_seguindo
+    @id_usuario INT
+AS
+BEGIN
+    SELECT u.id_usuario, u.username, u.foto_perfil
+    FROM seguidores s
+    INNER JOIN Usuario u ON s.id_seguido = u.id_usuario
+    WHERE s.id_seguidor = @id_usuario
+END
+GO
+
+CREATE PROCEDURE prc_buscar_historias_usuario
+    @id_autor INT
+AS
+BEGIN
+    SELECT * FROM historias
+    WHERE id_autor = @id_autor
+    AND status_his != 'Rascunho'
+END
+GO
+
+CREATE PROCEDURE prc_excluir_lista
+    @id_lista INT
+AS
+BEGIN
+    DELETE FROM listahistoria WHERE id_lista = @id_lista
+    DELETE FROM lista WHERE id_lista = @id_lista
+END
+GO
 ------------------------------ SELECTS ------------------------------
 
 CREATE PROCEDURE prc_buscar_historia
@@ -355,4 +449,10 @@ BEGIN
     WHERE id_autor IN (SELECT id_usuario FROM DELETED)
 END
 GO
+
 SELECT * FROM Usuario
+SELECT name FROM sys.procedures WHERE name = 'prc_fazer_login'
+
+ALTER TABLE Usuario
+ADD bio VARCHAR(300),
+    foto_perfil VARCHAR(500);

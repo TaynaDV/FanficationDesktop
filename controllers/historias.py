@@ -31,3 +31,11 @@ def contar_votos_historia(id_livro):
     resultado = cursor.fetchone()
     conn.close()
     return resultado
+
+def buscar_historias_usuario(id_usuario):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC prc_buscar_historias_usuario ?", (id_usuario,))
+    resultado = cursor.fetchall()
+    conn.close()
+    return resultado
